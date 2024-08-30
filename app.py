@@ -35,10 +35,10 @@ pickup_latitude = st.number_input(
 pickup_longitude = st.number_input(
         "Pickup Longitude")
 
-dropout_longitude = st.number_input(
+dropoff_longitude = st.number_input(
         "Dropout Longitude")
 
-dropout_latitude = st.number_input(
+dropoff_latitude = st.number_input(
         "Dropout Latitude")
 
 st.write(pickup_latitude, pickup_longitude)
@@ -51,7 +51,21 @@ passenger_count = st.number_input("Passanger count",
 
 st.write(passenger_count)
 
-api = "url"
-data = requests.get(api)
-
-st.write(data)
+# Button to get prediction
+if st.button('Get Fare'):
+    # Params dictionary with input data
+    params = {
+        "pickup_datetime": pickup_datetime,
+        "pickup_latitude": pickup_latitude,
+        "pickup_longitude": pickup_longitude,
+        "dropoff_latitude": dropoff_latitude,
+        "dropoff_longitude": dropoff_longitude,
+        "passenger_count": passenger_count
+    }
+    # Sending request to the API
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        fare = response.json().get('fare')
+        st.success(f'Predicted Fare: ${fare:.2f}')
+    else:
+        st.error(f"Error: {response.status_code}")
